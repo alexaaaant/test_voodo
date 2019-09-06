@@ -3,6 +3,7 @@ import './App.css';
 import { IData } from './types';
 import dataFromJson from './data/data.json';
 import { dataToMap } from './helpFunction/helpFunction';
+import { folderUrl, fileUrl, FOLDER } from './constants';
 
 interface IStateForApp {
   currentFolderId: number,
@@ -36,41 +37,12 @@ class App extends React.Component<{}, IStateForApp> {
               <div className="top_panel-name">{currentFolder.name}</div>
             </div>
             <div className="cells_container">
-              <div className="cells_container-cell"></div>
-              <div className="cells_container-cell"></div>
-              <div className="cells_container-cell"></div>
-              <div className="cells_container-cell"></div>
-              <div className="cells_container-cell"></div>
-              <div className="cells_container-cell"></div>
-              <div className="cells_container-cell"></div>
-              <div className="cells_container-cell"></div>
-              <div className="cells_container-cell"></div>
-              <div className="cells_container-cell"></div>
-              <div className="cells_container-cell"></div>
-              <div className="cells_container-cell"></div>
-              <div className="cells_container-cell"></div>
-              <div className="cells_container-cell"></div>
-              <div className="cells_container-cell"></div>
-              <div className="cells_container-cell"></div>
-              <div className="cells_container-cell"></div>
-              <div className="cells_container-cell"></div>
-              <div className="cells_container-cell"></div>
-              <div className="cells_container-cell"></div>
-              <div className="cells_container-cell"></div>
-              <div className="cells_container-cell"></div>
-              <div className="cells_container-cell"></div>
-              <div className="cells_container-cell"></div>
-              <div className="cells_container-cell"></div>
-              <div className="cells_container-cell"></div>
-              <div className="cells_container-cell"></div>
-              <div className="cells_container-cell"></div>
-              <div className="cells_container-cell"></div>
-              <div className="cells_container-cell"></div>
-              <div className="cells_container-cell"></div>
-              <div className="cells_container-cell"></div>
-              <div className="cells_container-cell"></div>
-              <div className="cells_container-cell"></div>
-              <div className="cells_container-cell"></div>
+              {currentFolder.children.map((child) => (
+                <div className="cells_container-cell" key={child.id}>
+                  <img className="cells_container-cell-img" src={child.type === FOLDER ? folderUrl: fileUrl} alt='folder..'></img>
+                  <span className="cells_container-cell-name">{child.name}</span>
+                </div>
+              ))}
             </div>
           </> : 'Loading...'
         }
