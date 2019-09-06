@@ -1,13 +1,8 @@
 import React from 'react';
 import './App.css';
 import { IData } from './types';
-
-interface IData {
-  id: number,
-  name: string,
-  type: string,
-  children: IData,
-}
+import dataFromJson from './data/data.json';
+import { dataToMap } from './helpFunction/helpFunction';
 
 interface IStateForApp {
   currentFolderId: number,
@@ -21,6 +16,10 @@ class App extends React.Component<{}, IStateForApp> {
       currentFolderId: 0,
       data: new Map(),
     }
+  }
+
+  componentDidMount() {
+    const data: IStateForApp['data'] = dataToMap(dataFromJson);
   }
   render() {
     return (
