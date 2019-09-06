@@ -1,5 +1,6 @@
 import React from 'react';
 import './App.css';
+import { IData } from './types';
 
 interface IData {
   id: number,
