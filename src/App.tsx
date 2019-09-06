@@ -20,10 +20,61 @@ class App extends React.Component<{}, IStateForApp> {
 
   componentDidMount() {
     const data: IStateForApp['data'] = dataToMap(dataFromJson);
+    this.setState({
+      data,
+    })
   }
   render() {
+    const { data, currentFolderId } = this.state;
+    const currentFolder: IData | undefined = data.get(currentFolderId);
     return (
-      <div></div>
+      <div className="wrapper">
+        {currentFolder ?
+          <>
+            <div className="top_panel">
+              <div className="top_panel-up">Up</div>
+              <div className="top_panel-name">{currentFolder.name}</div>
+            </div>
+            <div className="cells_container">
+              <div className="cells_container-cell"></div>
+              <div className="cells_container-cell"></div>
+              <div className="cells_container-cell"></div>
+              <div className="cells_container-cell"></div>
+              <div className="cells_container-cell"></div>
+              <div className="cells_container-cell"></div>
+              <div className="cells_container-cell"></div>
+              <div className="cells_container-cell"></div>
+              <div className="cells_container-cell"></div>
+              <div className="cells_container-cell"></div>
+              <div className="cells_container-cell"></div>
+              <div className="cells_container-cell"></div>
+              <div className="cells_container-cell"></div>
+              <div className="cells_container-cell"></div>
+              <div className="cells_container-cell"></div>
+              <div className="cells_container-cell"></div>
+              <div className="cells_container-cell"></div>
+              <div className="cells_container-cell"></div>
+              <div className="cells_container-cell"></div>
+              <div className="cells_container-cell"></div>
+              <div className="cells_container-cell"></div>
+              <div className="cells_container-cell"></div>
+              <div className="cells_container-cell"></div>
+              <div className="cells_container-cell"></div>
+              <div className="cells_container-cell"></div>
+              <div className="cells_container-cell"></div>
+              <div className="cells_container-cell"></div>
+              <div className="cells_container-cell"></div>
+              <div className="cells_container-cell"></div>
+              <div className="cells_container-cell"></div>
+              <div className="cells_container-cell"></div>
+              <div className="cells_container-cell"></div>
+              <div className="cells_container-cell"></div>
+              <div className="cells_container-cell"></div>
+              <div className="cells_container-cell"></div>
+            </div>
+          </> : 'Loading...'
+        }
+      </div>
     )
   }
 }
