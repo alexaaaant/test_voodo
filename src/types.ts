@@ -1,5 +1,5 @@
 export interface IData extends IDataFromJson {
-    children: IData,
+    children: IData[],
 }
 
 export interface IDataFromJson {
