@@ -3,11 +3,12 @@ import './App.css';
 import { IData } from './types';
 import dataFromJson from './data/data.json';
 import { dataToMap } from './helpFunction/helpFunction';
-import { folderUrl, fileUrl, FOLDER } from './constants';
+import { folderUrl, fileUrl, FOLDER, FILE } from './constants';
 
 interface IStateForApp {
   currentFolderId: number,
   data: Map<number, IData>,
+  isDragging: boolean,
 }
 
 class App extends React.Component<{}, IStateForApp> {
@@ -16,6 +17,7 @@ class App extends React.Component<{}, IStateForApp> {
     this.state = {
       currentFolderId: 0,
       data: new Map(),
+      isDragging: false,
     }
   }
 
@@ -50,6 +52,9 @@ class App extends React.Component<{}, IStateForApp> {
     if (event.currentTarget.dataset.id) {
       event.dataTransfer.setData('text', event.currentTarget.dataset.id);
     }
+    this.setState({
+      isDragging: true,
+    })
   }
 
   handleDrop = (event: React.DragEvent<HTMLElement>) => {
@@ -69,18 +74,25 @@ class App extends React.Component<{}, IStateForApp> {
     }
     this.setState({
       data: copyData,
+      isDragging: false,
     })
   }
 
   handleDragOver = (event: React.DragEvent<HTMLElement>) => {
     event.preventDefault();
-    if (event.currentTarget.dataset.type !== FOLDER) {
+    if (event.currentTarget.dataset.type === FILE) {
       event.dataTransfer.dropEffect = 'none';
     }
   }
 
+  handleDragEnd = () => {
+    this.setState({
+      isDragging: false,
+    })
+  }
+
   render() {
-    const { data, currentFolderId } = this.state;
+    const { data, currentFolderId, isDragging } = this.state;
     const currentFolder: IData | undefined = data.get(currentFolderId);
     return (
       <div className="wrapper">
@@ -88,6 +100,7 @@ class App extends React.Component<{}, IStateForApp> {
           <>
             <div className="top_panel">
               <div className="top_panel-up" onClick={this.handleClickToUp}>Come back</div>
+              {isDragging && <div className="top_panel-dropToUp" data-id={currentFolder.parentId} onDrop={this.handleDrop} onDragOver={this.handleDragOver}>Drop to up folder</div>}
               <div className="top_panel-name">{`Current position: ${currentFolder.name}`}</div>
             </div>
             <div className="cells_container">
@@ -96,6 +109,7 @@ class App extends React.Component<{}, IStateForApp> {
                   className="cells_container-cell"
                   onDragStart={this.handleDragStart}
                   onDrop={this.handleDrop}
+                  onDragEnd={this.handleDragEnd}
                   onDragOver={this.handleDragOver}
                   draggable
                   key={child.id}

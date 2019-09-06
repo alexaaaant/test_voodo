@@ -2,3 +2,4 @@ export const folderUrl = 'https://api.icons8.com/download/5d0df72fd1e3f7209d05c1
 export const fileUrl = 'http://s1.iconbird.com/ico/2013/12/505/w450h4001385925290Document.png';
 
 export const FOLDER = 'folder';
+export const FILE = 'file';
