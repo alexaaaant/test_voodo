@@ -25,6 +25,26 @@ class App extends React.Component<{}, IStateForApp> {
       data,
     })
   }
+
+  handleDoubleClick = (event: React.SyntheticEvent<HTMLElement>) => {
+    const elemData = event.currentTarget.dataset;
+    if (elemData.type === FOLDER) {
+      this.setState({
+        currentFolderId: Number(elemData.id),
+      })
+    }
+  }
+
+  handleClickToUp = () => {
+    const { currentFolderId, data } = this.state;
+    const currentFolder = data.get(currentFolderId);
+    if (currentFolder && currentFolder.parentId !== null) {
+      this.setState({
+        currentFolderId: currentFolder.parentId
+      })
+    }
+  }
+
   render() {
     const { data, currentFolderId } = this.state;
     const currentFolder: IData | undefined = data.get(currentFolderId);
@@ -33,13 +53,13 @@ class App extends React.Component<{}, IStateForApp> {
         {currentFolder ?
           <>
             <div className="top_panel">
-              <div className="top_panel-up">Up</div>
+              <div className="top_panel-up" onClick={this.handleClickToUp}>Up</div>
               <div className="top_panel-name">{currentFolder.name}</div>
             </div>
             <div className="cells_container">
-              {currentFolder.children.map((child) => (
-                <div className="cells_container-cell" key={child.id}>
-                  <img className="cells_container-cell-img" src={child.type === FOLDER ? folderUrl: fileUrl} alt='folder..'></img>
+              {currentFolder.children && currentFolder.children.map((child) => (
+                <div className="cells_container-cell" key={child.id} data-id={child.id} data-type={child.type} onDoubleClick={this.handleDoubleClick}>
+                  <img className="cells_container-cell-img" src={child.type === FOLDER ? folderUrl : fileUrl} alt='folder..'></img>
                   <span className="cells_container-cell-name">{child.name}</span>
                 </div>
               ))}
