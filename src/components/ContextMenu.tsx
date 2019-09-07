@@ -1,13 +1,16 @@
 import React from 'react';
 import './ContextMenu.css';
+import { FOLDER, FILE } from '../constants';
 
 interface IPropsForContextMenu {
     closeContextMenu(): void,
     coords: { x: number, y: number },
+    type: string | null,
 }
 
 interface IStateForContextMenu {
     coords: IPropsForContextMenu['coords'],
+    type: IPropsForContextMenu['type'],
 }
 
 class ContextMenu extends React.Component<IPropsForContextMenu, IStateForContextMenu> {
@@ -20,15 +23,17 @@ class ContextMenu extends React.Component<IPropsForContextMenu, IStateForContext
             coords: {
                 x: 0,
                 y: 0,
-            }
+            },
+            type: null,
         }
     }
 
     componentDidMount() {
-        const { coords } = this.props;
+        const { coords, type } = this.props;
         document.addEventListener('mousedown', (e) => this.handleClickOutside(e));
         this.setState({
-            coords
+            coords,
+            type
         })
     }
 
@@ -42,18 +47,31 @@ class ContextMenu extends React.Component<IPropsForContextMenu, IStateForContext
             if (event.button === 2) {
                 let x = event.clientX;
                 let y = event.clientY;
+                let type = event.target.dataset.type;
                 this.setState({
-                    coords: { x, y }
+                    coords: { x, y },
+                    type,
                 })
             }
         }
     }
 
+    renderContextMenu = () => {
+        const { type, coords } = this.state;
+        switch (type) {
+            case FOLDER:
+            case FILE: {
+                return <div style={{ left: coords.x, top: coords.y }} ref={this.contextMenu} className='context_menu'>
+                </div>
+            }
+            default:
+                return <div ref={this.contextMenu}>123</div>
+        }
+    }
+
     render() {
-        const { coords } = this.state;
         return (
-            <div style={{ left: coords.x, top: coords.y }} ref={this.contextMenu} className='context_menu'>
-            </div>
+            this.renderContextMenu()
         )
     }
 };

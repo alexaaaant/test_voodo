@@ -13,6 +13,7 @@ interface IStateForApp {
   contextMenu: {
     isOpenContextMenu: boolean,
     coords: { x: number, y: number },
+    type: string | null,
   }
 }
 
@@ -26,6 +27,7 @@ class App extends React.Component<{}, IStateForApp> {
       contextMenu: {
         isOpenContextMenu: false,
         coords: { x: 0, y: 0 },
+        type: null,
       }
     }
   }
@@ -103,9 +105,7 @@ class App extends React.Component<{}, IStateForApp> {
   handleContextMenu = (event: MouseEvent) => {
     event.preventDefault();
     let htmlElem = event.target as any;
-    if (htmlElem.dataset && (htmlElem.dataset.type === FOLDER || htmlElem.dataset.type === FILE)) {
-
-    }
+    let type = htmlElem.dataset ? htmlElem.dataset.type : null;
     if (!this.state.contextMenu.isOpenContextMenu) {
       let x = event.clientX;
       let y = event.clientY;
@@ -117,6 +117,7 @@ class App extends React.Component<{}, IStateForApp> {
             y
           },
           isOpenContextMenu: true,
+          type,
         }
       }))
     }
@@ -132,6 +133,7 @@ class App extends React.Component<{}, IStateForApp> {
           y: prevState.contextMenu.coords.y
         },
         isOpenContextMenu: false,
+        type: null,
       }
     }))
   }
@@ -171,7 +173,7 @@ class App extends React.Component<{}, IStateForApp> {
                   <span className="cells_container-cell-name">{child.name}</span>
                 </div>
               ))}
-              {contextMenu.isOpenContextMenu && <ContextMenu closeContextMenu={this.closeContextMenu} coords={contextMenu.coords} />}
+              {contextMenu.isOpenContextMenu && <ContextMenu type={contextMenu.type} closeContextMenu={this.closeContextMenu} coords={contextMenu.coords} />}
             </div>
           </> : 'Loading...'
         }
