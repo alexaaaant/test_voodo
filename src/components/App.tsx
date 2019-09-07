@@ -218,7 +218,7 @@ class App extends React.Component<{}, IStateForApp> {
             handleDragOver={this.handleDragOver}
             isDragging={isDragging} />
             <div className="cells_container">
-              {currentFolder.children && currentFolder.children.map((child) => (
+              {currentFolder.children.length ? currentFolder.children.map((child) => (
                 <div
                   className="cells_container-cell"
                   onDragStart={this.handleDragStart}
@@ -240,7 +240,7 @@ class App extends React.Component<{}, IStateForApp> {
                     :
                     <span className="cells_container-cell-name">{child.name}</span>}
                 </div>
-              ))}
+              )) : <span>Empty folder</span>}
               {contextMenu.isOpen &&
                 <ContextMenu
                   changeElement={this.changeElement}
