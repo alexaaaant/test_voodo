@@ -1,6 +1,6 @@
 import React from 'react';
 import './ContextMenu.css';
-import { FOLDER, FILE } from '../constants';
+import { FOLDER, FILE, RENAME_ELEMENT, CREATE_FOLDER, CREATE_FILE } from '../constants';
 
 interface IPropsForContextMenu {
   closeContextMenu(): void,
@@ -71,13 +71,13 @@ class ContextMenu extends React.Component<IPropsForContextMenu, IStateForContext
       case FOLDER:
       case FILE: {
         return <div style={{ left: coords.x, top: coords.y }} ref={this.contextMenu} className='context_menu'>
-          <span className='context_menu-item' onClick={(e) => changeElement(selectedElementId)}>Rename element</span>
+          <span className='context_menu-item' onClick={(e) => changeElement(selectedElementId)}>{RENAME_ELEMENT}</span>
         </div>
       }
       default:
         return <div style={{ left: coords.x, top: coords.y }} className='context_menu' ref={this.contextMenu}>
-          <span className='context_menu-item' onClick={(e) => createElement(FOLDER)}>Create folder</span>
-          <span className='context_menu-item' onClick={(e) => createElement(FILE)}>Create file</span>
+          <span className='context_menu-item' onClick={(e) => createElement(FOLDER)}>{CREATE_FOLDER}</span>
+          <span className='context_menu-item' onClick={(e) => createElement(FILE)}>{CREATE_FILE}</span>
         </div>
     }
   }

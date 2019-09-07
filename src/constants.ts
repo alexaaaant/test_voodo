@@ -3,3 +3,12 @@ export const fileUrl = 'http://s1.iconbird.com/ico/2013/12/505/w450h400138592529
 
 export const FOLDER = 'folder';
 export const FILE = 'file';
+
+export const EMPTY_FOLDER = 'Empty folder';
+export const LOADING = 'Loading...';
+export const GO_BACK = 'Go back';
+export const CURRENT_POSITION = 'Current position';
+export const DROP_TO_UP_FOLDER = 'Drop to up folder';
+export const RENAME_ELEMENT = 'Rename element';
+export const CREATE_FOLDER = 'Create folder';
+export const CREATE_FILE = 'Create file';

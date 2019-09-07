@@ -3,7 +3,7 @@ import './App.css';
 import { IData } from '../types';
 import dataFromJson from '../data/data.json';
 import { dataToMap } from '../helpFunction/helpFunction';
-import { folderUrl, fileUrl, FOLDER, FILE } from '../constants';
+import { folderUrl, fileUrl, FOLDER, FILE, EMPTY_FOLDER, LOADING } from '../constants';
 import ContextMenu from './ContextMenu';
 import TopPanel from './TopPanel';
 
@@ -144,10 +144,7 @@ class App extends React.Component<{}, IStateForApp> {
       this.setState(prevState => ({
         ...prevState,
         contextMenu: {
-          coords: {
-            x,
-            y
-          },
+          coords: { x, y },
           isOpen: true,
           type,
           elementId,
@@ -211,12 +208,12 @@ class App extends React.Component<{}, IStateForApp> {
       <div className="wrapper" onContextMenu={this.handleContextMenu}>
         {currentFolder ?
           <>
-            <TopPanel 
-            currentFolder={currentFolder} 
-            handleClickToBack={this.handleClickToBack}
-            handleDrop={this.handleDrop}
-            handleDragOver={this.handleDragOver}
-            isDragging={isDragging} />
+            <TopPanel
+              currentFolder={currentFolder}
+              handleClickToBack={this.handleClickToBack}
+              handleDrop={this.handleDrop}
+              handleDragOver={this.handleDragOver}
+              isDragging={isDragging} />
             <div className="cells_container">
               {currentFolder.children.length ? currentFolder.children.map((child) => (
                 <div
@@ -230,7 +227,7 @@ class App extends React.Component<{}, IStateForApp> {
                   data-id={child.id}
                   data-type={child.type}
                   onDoubleClick={this.handleDoubleClick}>
-                  <img className="cells_container-cell-img" src={child.type === FOLDER ? folderUrl : fileUrl} alt='folder..'></img>
+                  <img className="cells_container-cell-img" src={child.type === FOLDER ? folderUrl : fileUrl} alt='folder..' />
                   {changingElementId === child.id ?
                     <input
                       ref={this.inputElement}
@@ -240,7 +237,7 @@ class App extends React.Component<{}, IStateForApp> {
                     :
                     <span className="cells_container-cell-name">{child.name}</span>}
                 </div>
-              )) : <span>Empty folder</span>}
+              )) : <span>{EMPTY_FOLDER}</span>}
               {contextMenu.isOpen &&
                 <ContextMenu
                   changeElement={this.changeElement}
@@ -250,7 +247,7 @@ class App extends React.Component<{}, IStateForApp> {
                   createElement={this.createElement}
                   coords={contextMenu.coords} />}
             </div>
-          </> : 'Loading...'
+          </> : LOADING
         }
       </div>
     )
