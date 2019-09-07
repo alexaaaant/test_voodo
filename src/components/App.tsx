@@ -1,9 +1,9 @@
 import React from 'react';
 import './App.css';
-import { IData } from './types';
-import dataFromJson from './data/data.json';
-import { dataToMap } from './helpFunction/helpFunction';
-import { folderUrl, fileUrl, FOLDER, FILE } from './constants';
+import { IData } from '../types';
+import dataFromJson from '../data/data.json';
+import { dataToMap } from '../helpFunction/helpFunction';
+import { folderUrl, fileUrl, FOLDER, FILE } from '../constants';
 
 interface IStateForApp {
   currentFolderId: number,
@@ -99,8 +99,14 @@ class App extends React.Component<{}, IStateForApp> {
         {currentFolder ?
           <>
             <div className="top_panel">
-              <div className="top_panel-up" onClick={this.handleClickToUp}>Come back</div>
-              {isDragging && <div className="top_panel-dropToUp" data-id={currentFolder.parentId} onDrop={this.handleDrop} onDragOver={this.handleDragOver}>Drop to up folder</div>}
+              {currentFolder.parentId !== null && <div className="top_panel-up" onClick={this.handleClickToUp}>Come back</div>}
+              {isDragging && currentFolder.parentId !== null &&
+                <div
+                  className="top_panel-dropToUp"
+                  data-id={currentFolder.parentId}
+                  onDrop={this.handleDrop}
+                  onDragOver={this.handleDragOver}>Drop to up folder
+                  </div>}
               <div className="top_panel-name">{`Current position: ${currentFolder.name}`}</div>
             </div>
             <div className="cells_container">
