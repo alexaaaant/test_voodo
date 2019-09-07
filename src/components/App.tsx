@@ -198,7 +198,8 @@ class App extends React.Component<{}, IStateForApp> {
     parentElement && parentElement.children.push(newElement);
     copyData.set(data.size, newElement);
     this.setState({
-      data: copyData
+      data: copyData,
+      changingElementName: newElement.name,
     }, () => this.changeElement(newElement.id));
   }
 
