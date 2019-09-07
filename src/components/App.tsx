@@ -14,7 +14,9 @@ interface IStateForApp {
     isOpenContextMenu: boolean,
     coords: { x: number, y: number },
     type: string | null,
-  }
+    elementId: number | null,
+  },
+  changingElementId: number | null,
 }
 
 class App extends React.Component<{}, IStateForApp> {
@@ -28,7 +30,9 @@ class App extends React.Component<{}, IStateForApp> {
         isOpenContextMenu: false,
         coords: { x: 0, y: 0 },
         type: null,
-      }
+        elementId: null,
+      },
+      changingElementId: null,
     }
   }
 
@@ -106,6 +110,7 @@ class App extends React.Component<{}, IStateForApp> {
     event.preventDefault();
     let htmlElem = event.target as any;
     let type = htmlElem.dataset ? htmlElem.dataset.type : null;
+    let elementId = htmlElem.dataset ? Number(htmlElem.dataset.id) : null;
     if (!this.state.contextMenu.isOpenContextMenu) {
       let x = event.clientX;
       let y = event.clientY;
@@ -118,6 +123,7 @@ class App extends React.Component<{}, IStateForApp> {
           },
           isOpenContextMenu: true,
           type,
+          elementId,
         }
       }))
     }
@@ -134,12 +140,20 @@ class App extends React.Component<{}, IStateForApp> {
         },
         isOpenContextMenu: false,
         type: null,
+        elementId: null,
       }
     }))
   }
 
+  changeElement = (id: number | null) => {
+    this.setState({
+      changingElementId: id,
+    })
+    this.closeContextMenu();
+  }
+
   render() {
-    const { data, currentFolderId, isDragging, contextMenu } = this.state;
+    const { data, currentFolderId, isDragging, contextMenu, changingElementId } = this.state;
     const currentFolder: IData | undefined = data.get(currentFolderId);
     return (
       <div className="wrapper" onContextMenu={this.handleContextMenu}>
@@ -170,10 +184,10 @@ class App extends React.Component<{}, IStateForApp> {
                   data-type={child.type}
                   onDoubleClick={this.handleDoubleClick}>
                   <img className="cells_container-cell-img" src={child.type === FOLDER ? folderUrl : fileUrl} alt='folder..'></img>
-                  <span className="cells_container-cell-name">{child.name}</span>
+                  {changingElementId === child.id ? <input defaultValue={child.name} className="cells_container-cell-name"></input> : <span className="cells_container-cell-name">{child.name}</span>}
                 </div>
               ))}
-              {contextMenu.isOpenContextMenu && <ContextMenu type={contextMenu.type} closeContextMenu={this.closeContextMenu} coords={contextMenu.coords} />}
+              {contextMenu.isOpenContextMenu && <ContextMenu changeElement={this.changeElement} elementId={contextMenu.elementId} type={contextMenu.type} closeContextMenu={this.closeContextMenu} coords={contextMenu.coords} />}
             </div>
           </> : 'Loading...'
         }
