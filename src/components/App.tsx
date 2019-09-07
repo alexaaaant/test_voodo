@@ -1,14 +1,19 @@
-import React from 'react';
+import React, { MouseEvent } from 'react';
 import './App.css';
 import { IData } from '../types';
 import dataFromJson from '../data/data.json';
 import { dataToMap } from '../helpFunction/helpFunction';
 import { folderUrl, fileUrl, FOLDER, FILE } from '../constants';
+import ContextMenu from './ContextMenu';
 
 interface IStateForApp {
   currentFolderId: number,
   data: Map<number, IData>,
   isDragging: boolean,
+  contextMenu: {
+    isOpenContextMenu: boolean,
+    coords: { x: number, y: number },
+  }
 }
 
 class App extends React.Component<{}, IStateForApp> {
@@ -18,6 +23,10 @@ class App extends React.Component<{}, IStateForApp> {
       currentFolderId: 0,
       data: new Map(),
       isDragging: false,
+      contextMenu: {
+        isOpenContextMenu: false,
+        coords: { x: 0, y: 0 },
+      }
     }
   }
 
@@ -91,11 +100,47 @@ class App extends React.Component<{}, IStateForApp> {
     })
   }
 
+  handleContextMenu = (event: MouseEvent) => {
+    event.preventDefault();
+    let htmlElem = event.target as any;
+    if (htmlElem.dataset && (htmlElem.dataset.type === FOLDER || htmlElem.dataset.type === FILE)) {
+
+    }
+    if (!this.state.contextMenu.isOpenContextMenu) {
+      let x = event.clientX;
+      let y = event.clientY;
+      this.setState(prevState => ({
+        ...prevState,
+        contextMenu: {
+          coords: {
+            x,
+            y
+          },
+          isOpenContextMenu: true,
+        }
+      }))
+    }
+    return false;
+  }
+
+  closeContextMenu = () => {
+    this.setState(prevState => ({
+      ...prevState,
+      contextMenu: {
+        coords: {
+          x: prevState.contextMenu.coords.x,
+          y: prevState.contextMenu.coords.y
+        },
+        isOpenContextMenu: false,
+      }
+    }))
+  }
+
   render() {
-    const { data, currentFolderId, isDragging } = this.state;
+    const { data, currentFolderId, isDragging, contextMenu } = this.state;
     const currentFolder: IData | undefined = data.get(currentFolderId);
     return (
-      <div className="wrapper">
+      <div className="wrapper" onContextMenu={this.handleContextMenu}>
         {currentFolder ?
           <>
             <div className="top_panel">
@@ -126,6 +171,7 @@ class App extends React.Component<{}, IStateForApp> {
                   <span className="cells_container-cell-name">{child.name}</span>
                 </div>
               ))}
+              {contextMenu.isOpenContextMenu && <ContextMenu closeContextMenu={this.closeContextMenu} coords={contextMenu.coords} />}
             </div>
           </> : 'Loading...'
         }
