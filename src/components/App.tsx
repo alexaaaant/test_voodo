@@ -17,11 +17,15 @@ interface IStateForApp {
     elementId: number | null,
   },
   changingElementId: number | null,
+  changingElementName: string,
 }
 
 class App extends React.Component<{}, IStateForApp> {
+  private inputElement: React.RefObject<HTMLInputElement>;
+
   constructor(props: any) {
     super(props);
+    this.inputElement = React.createRef();
     this.state = {
       currentFolderId: 0,
       data: new Map(),
@@ -33,15 +37,37 @@ class App extends React.Component<{}, IStateForApp> {
         elementId: null,
       },
       changingElementId: null,
+      changingElementName: '',
     }
   }
 
   componentDidMount() {
     const data: IStateForApp['data'] = dataToMap(dataFromJson);
+    document.addEventListener('mousedown', (e) => this.handleClickOutside(e));
+    document.addEventListener('keypress', (e) => this.handleClickOutside(e));
     this.setState({
       data,
     })
   }
+
+  componentWillUnmount() {
+    document.removeEventListener('mousedown', (e) => this.handleClickOutside(e));
+    document.removeEventListener('keypress', (e) => this.handleClickOutside(e));
+}
+
+handleClickOutside = (event: any) => {
+  if ((this.inputElement.current && !this.inputElement.current.contains(event.target)) || event.which === 13) {
+      const { data, changingElementId, changingElementName } = this.state;
+      let copyData = new Map(data);
+      let elem = changingElementId !== null && copyData.get(changingElementId);
+      if (elem) elem.name = changingElementName;
+      this.setState({
+        data: copyData,
+        changingElementName: '',
+        changingElementId: null,
+      })
+  }
+}
 
   handleDoubleClick = (event: React.SyntheticEvent<HTMLElement>) => {
     const elemData = event.currentTarget.dataset;
@@ -152,6 +178,12 @@ class App extends React.Component<{}, IStateForApp> {
     this.closeContextMenu();
   }
 
+  changeElementName = (event: React.SyntheticEvent<HTMLInputElement>) => {
+    this.setState({
+      changingElementName: event.currentTarget.value
+    })
+  }
+
   render() {
     const { data, currentFolderId, isDragging, contextMenu, changingElementId } = this.state;
     const currentFolder: IData | undefined = data.get(currentFolderId);
@@ -184,10 +216,16 @@ class App extends React.Component<{}, IStateForApp> {
                   data-type={child.type}
                   onDoubleClick={this.handleDoubleClick}>
                   <img className="cells_container-cell-img" src={child.type === FOLDER ? folderUrl : fileUrl} alt='folder..'></img>
-                  {changingElementId === child.id ? <input defaultValue={child.name} className="cells_container-cell-name"></input> : <span className="cells_container-cell-name">{child.name}</span>}
+                  {changingElementId === child.id ? <input ref={this.inputElement} onChange={this.changeElementName} defaultValue={child.name} className="cells_container-cell-name"></input> : <span className="cells_container-cell-name">{child.name}</span>}
                 </div>
               ))}
-              {contextMenu.isOpenContextMenu && <ContextMenu changeElement={this.changeElement} elementId={contextMenu.elementId} type={contextMenu.type} closeContextMenu={this.closeContextMenu} coords={contextMenu.coords} />}
+              {contextMenu.isOpenContextMenu &&
+                <ContextMenu
+                  changeElement={this.changeElement}
+                  elementId={contextMenu.elementId}
+                  type={contextMenu.type}
+                  closeContextMenu={this.closeContextMenu}
+                  coords={contextMenu.coords} />}
             </div>
           </> : 'Loading...'
         }
