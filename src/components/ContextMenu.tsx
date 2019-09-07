@@ -62,10 +62,15 @@ class ContextMenu extends React.Component<IPropsForContextMenu, IStateForContext
             case FOLDER:
             case FILE: {
                 return <div style={{ left: coords.x, top: coords.y }} ref={this.contextMenu} className='context_menu'>
+                    <span className='context_menu-item'>Rename element</span>
+                    <span className='context_menu-item'>Delete element</span>
                 </div>
             }
             default:
-                return <div ref={this.contextMenu}>123</div>
+                return <div style={{ left: coords.x, top: coords.y }} className='context_menu' ref={this.contextMenu}>
+                    <span className='context_menu-item'>Create folder</span>
+                    <span className='context_menu-item'>Create file</span>
+                </div>
         }
     }
 

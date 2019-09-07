@@ -1,6 +1,21 @@
 .context_menu {
-    background-color: black;
-    width: 50px;
-    height: 50px;
     position: absolute;
+    display: flex;
+    flex-direction: column;
+    border: 1px solid gainsboro;
+    background-color: rgba(255,255,255,0.8);
+    padding: 5px;
+}
+
+.context_menu-item {
+    cursor: pointer;
+    color: dimgrey;
+}
+
+.context_menu-item:not(:last-child){
+    margin-bottom: 3px;
+}
+
+.context_menu-item:hover {
+    color: black;
 }
