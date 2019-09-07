@@ -106,7 +106,7 @@ class App extends React.Component<{}, IStateForApp> {
     let copyData = new Map(data);
     let sourceElem = copyData.get(sourceElemId);
     let elem = copyData.get(elemId);
-    if (elem && sourceElem) {
+    if (elem && sourceElem && elemId !== sourceElemId) {
       let parentElem = elem.parentId !== null && copyData.get(elem.parentId);
       if (parentElem) {
         parentElem.children = parentElem.children.filter((child) => child.id !== elem!.id);
