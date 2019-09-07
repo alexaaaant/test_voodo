@@ -11,7 +11,7 @@ interface IStateForApp {
   data: Map<number, IData>,
   isDragging: boolean,
   contextMenu: {
-    isOpenContextMenu: boolean,
+    isOpen: boolean,
     coords: { x: number, y: number },
     type: string,
     elementId: number | null,
@@ -31,7 +31,7 @@ class App extends React.Component<{}, IStateForApp> {
       data: new Map(),
       isDragging: false,
       contextMenu: {
-        isOpenContextMenu: false,
+        isOpen: false,
         coords: { x: 0, y: 0 },
         type: '',
         elementId: null,
@@ -78,7 +78,7 @@ class App extends React.Component<{}, IStateForApp> {
     }
   }
 
-  handleClickToUp = () => {
+  handleClickToBack = () => {
     const { currentFolderId, data } = this.state;
     const currentFolder = data.get(currentFolderId);
     if (currentFolder && currentFolder.parentId !== null) {
@@ -137,7 +137,7 @@ class App extends React.Component<{}, IStateForApp> {
     let htmlElem = event.target as any;
     let type = htmlElem.dataset ? htmlElem.dataset.type : null;
     let elementId = htmlElem.dataset ? Number(htmlElem.dataset.id) : null;
-    if (!this.state.contextMenu.isOpenContextMenu) {
+    if (!this.state.contextMenu.isOpen) {
       let x = event.clientX;
       let y = event.clientY;
       this.setState(prevState => ({
@@ -147,7 +147,7 @@ class App extends React.Component<{}, IStateForApp> {
             x,
             y
           },
-          isOpenContextMenu: true,
+          isOpen: true,
           type,
           elementId,
         }
@@ -164,7 +164,7 @@ class App extends React.Component<{}, IStateForApp> {
           x: prevState.contextMenu.coords.x,
           y: prevState.contextMenu.coords.y
         },
-        isOpenContextMenu: false,
+        isOpen: false,
         type: '',
         elementId: null,
       }
@@ -210,7 +210,7 @@ class App extends React.Component<{}, IStateForApp> {
         {currentFolder ?
           <>
             <div className="top_panel">
-              {currentFolder.parentId !== null && <div className="top_panel-up" onClick={this.handleClickToUp}>Go back</div>}
+              {currentFolder.parentId !== null && <div className="top_panel-up" onClick={this.handleClickToBack}>Go back</div>}
               {isDragging && currentFolder.parentId !== null &&
                 <div
                   className="top_panel-dropToUp"
@@ -237,7 +237,7 @@ class App extends React.Component<{}, IStateForApp> {
                   {changingElementId === child.id ? <input ref={this.inputElement} onChange={this.changeElementName} defaultValue={child.name} className="cells_container-cell-name"></input> : <span className="cells_container-cell-name">{child.name}</span>}
                 </div>
               ))}
-              {contextMenu.isOpenContextMenu &&
+              {contextMenu.isOpen &&
                 <ContextMenu
                   changeElement={this.changeElement}
                   elementId={contextMenu.elementId}
