@@ -5,6 +5,7 @@ import dataFromJson from '../data/data.json';
 import { dataToMap } from '../helpFunction/helpFunction';
 import { folderUrl, fileUrl, FOLDER, FILE } from '../constants';
 import ContextMenu from './ContextMenu';
+import TopPanel from './TopPanel';
 
 interface IStateForApp {
   currentFolderId: number,
@@ -210,17 +211,12 @@ class App extends React.Component<{}, IStateForApp> {
       <div className="wrapper" onContextMenu={this.handleContextMenu}>
         {currentFolder ?
           <>
-            <div className="top_panel">
-              {currentFolder.parentId !== null && <div className="top_panel-up" onClick={this.handleClickToBack}>Go back</div>}
-              {isDragging && currentFolder.parentId !== null &&
-                <div
-                  className="top_panel-dropToUp"
-                  data-id={currentFolder.parentId}
-                  onDrop={this.handleDrop}
-                  onDragOver={this.handleDragOver}>Drop to up folder
-                  </div>}
-              <div className="top_panel-name">{`Current position: ${currentFolder.name}`}</div>
-            </div>
+            <TopPanel 
+            currentFolder={currentFolder} 
+            handleClickToBack={this.handleClickToBack}
+            handleDrop={this.handleDrop}
+            handleDragOver={this.handleDragOver}
+            isDragging={isDragging} />
             <div className="cells_container">
               {currentFolder.children && currentFolder.children.map((child) => (
                 <div
@@ -235,7 +231,14 @@ class App extends React.Component<{}, IStateForApp> {
                   data-type={child.type}
                   onDoubleClick={this.handleDoubleClick}>
                   <img className="cells_container-cell-img" src={child.type === FOLDER ? folderUrl : fileUrl} alt='folder..'></img>
-                  {changingElementId === child.id ? <input ref={this.inputElement} onChange={this.changeElementName} defaultValue={child.name} className="cells_container-cell-name"></input> : <span className="cells_container-cell-name">{child.name}</span>}
+                  {changingElementId === child.id ?
+                    <input
+                      ref={this.inputElement}
+                      onChange={this.changeElementName}
+                      defaultValue={child.name}
+                      className="cells_container-cell-name"></input>
+                    :
+                    <span className="cells_container-cell-name">{child.name}</span>}
                 </div>
               ))}
               {contextMenu.isOpen &&

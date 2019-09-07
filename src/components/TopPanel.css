@@ -1,0 +1,9 @@
+.top_panel {
+    display: flex;
+    height: 50px;
+    justify-content: space-between;
+  }
+  
+  .top_panel-up {
+    cursor: pointer;
+  }
