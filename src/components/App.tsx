@@ -13,7 +13,7 @@ interface IStateForApp {
   contextMenu: {
     isOpenContextMenu: boolean,
     coords: { x: number, y: number },
-    type: string | null,
+    type: string,
     elementId: number | null,
   },
   changingElementId: number | null,
@@ -33,7 +33,7 @@ class App extends React.Component<{}, IStateForApp> {
       contextMenu: {
         isOpenContextMenu: false,
         coords: { x: 0, y: 0 },
-        type: null,
+        type: '',
         elementId: null,
       },
       changingElementId: null,
@@ -53,10 +53,10 @@ class App extends React.Component<{}, IStateForApp> {
   componentWillUnmount() {
     document.removeEventListener('mousedown', (e) => this.handleClickOutside(e));
     document.removeEventListener('keypress', (e) => this.handleClickOutside(e));
-}
+  }
 
-handleClickOutside = (event: any) => {
-  if ((this.inputElement.current && !this.inputElement.current.contains(event.target)) || event.which === 13) {
+  handleClickOutside = (event: any) => {
+    if ((this.inputElement.current && !this.inputElement.current.contains(event.target)) || event.which === 13) {
       const { data, changingElementId, changingElementName } = this.state;
       let copyData = new Map(data);
       let elem = changingElementId !== null && copyData.get(changingElementId);
@@ -66,8 +66,8 @@ handleClickOutside = (event: any) => {
         changingElementName: '',
         changingElementId: null,
       })
+    }
   }
-}
 
   handleDoubleClick = (event: React.SyntheticEvent<HTMLElement>) => {
     const elemData = event.currentTarget.dataset;
@@ -165,7 +165,7 @@ handleClickOutside = (event: any) => {
           y: prevState.contextMenu.coords.y
         },
         isOpenContextMenu: false,
-        type: null,
+        type: '',
         elementId: null,
       }
     }))
@@ -182,6 +182,24 @@ handleClickOutside = (event: any) => {
     this.setState({
       changingElementName: event.currentTarget.value
     })
+  }
+
+  createElement = (type: string) => {
+    const { data, currentFolderId } = this.state;
+    let newElement = {
+      id: data.size,
+      name: `new ${type}`,
+      type,
+      parentId: currentFolderId,
+      children: [],
+    }
+    let copyData = new Map(data);
+    let parentElement = copyData.get(currentFolderId);
+    parentElement && parentElement.children.push(newElement);
+    copyData.set(data.size, newElement);
+    this.setState({
+      data: copyData
+    }, () => this.changeElement(newElement.id));
   }
 
   render() {
@@ -225,6 +243,7 @@ handleClickOutside = (event: any) => {
                   elementId={contextMenu.elementId}
                   type={contextMenu.type}
                   closeContextMenu={this.closeContextMenu}
+                  createElement={this.createElement}
                   coords={contextMenu.coords} />}
             </div>
           </> : 'Loading...'

@@ -5,15 +5,16 @@ import { FOLDER, FILE } from '../constants';
 interface IPropsForContextMenu {
     closeContextMenu(): void,
     changeElement(id: number | null): void,
+    createElement(type: string): void,
     coords: { x: number, y: number },
-    type: string | null,
+    type: string,
     elementId: number | null,
 }
 
 interface IStateForContextMenu {
     coords: IPropsForContextMenu['coords'],
     type: IPropsForContextMenu['type'],
-    selectedElementId: IPropsForContextMenu['elementId'], 
+    selectedElementId: IPropsForContextMenu['elementId'],
 }
 
 class ContextMenu extends React.Component<IPropsForContextMenu, IStateForContextMenu> {
@@ -27,7 +28,7 @@ class ContextMenu extends React.Component<IPropsForContextMenu, IStateForContext
                 x: 0,
                 y: 0,
             },
-            type: null,
+            type: '',
             selectedElementId: null,
         }
     }
@@ -65,19 +66,18 @@ class ContextMenu extends React.Component<IPropsForContextMenu, IStateForContext
 
     renderContextMenu = () => {
         const { type, coords, selectedElementId } = this.state;
-        const { changeElement } = this.props;
+        const { changeElement, createElement } = this.props;
         switch (type) {
             case FOLDER:
             case FILE: {
                 return <div style={{ left: coords.x, top: coords.y }} ref={this.contextMenu} className='context_menu'>
                     <span className='context_menu-item' onClick={(e) => changeElement(selectedElementId)}>Rename element</span>
-                    <span className='context_menu-item'>Delete element</span>
                 </div>
             }
             default:
                 return <div style={{ left: coords.x, top: coords.y }} className='context_menu' ref={this.contextMenu}>
-                    <span className='context_menu-item'>Create folder</span>
-                    <span className='context_menu-item'>Create file</span>
+                    <span className='context_menu-item' onClick={(e) => createElement(FOLDER)}>Create folder</span>
+                    <span className='context_menu-item' onClick={(e) => createElement(FILE)}>Create file</span>
                 </div>
         }
     }
