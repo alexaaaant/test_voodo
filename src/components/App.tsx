@@ -210,7 +210,7 @@ class App extends React.Component<{}, IStateForApp> {
         {currentFolder ?
           <>
             <div className="top_panel">
-              {currentFolder.parentId !== null && <div className="top_panel-up" onClick={this.handleClickToUp}>Come back</div>}
+              {currentFolder.parentId !== null && <div className="top_panel-up" onClick={this.handleClickToUp}>Go back</div>}
               {isDragging && currentFolder.parentId !== null &&
                 <div
                   className="top_panel-dropToUp"
